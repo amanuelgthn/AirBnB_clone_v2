@@ -117,11 +117,23 @@ class HBNBCommand(cmd.Cmd):
         """Creates a new instance of BaseModel, Saves it (to the JSON)
         and prints the id of the new instance"""
         print(args)
-        arguments = args.partition(" ")
+        arguments = args.split(" ")
         class_name = arguments[0]
-        kwargs = arguments[1]
-        print(kwargs)
-        print(class_name)
+        kwargs = arguments[1:]
+        if kwargs:
+            dict_kwargs = {}
+            for kwarg in kwargs:
+                key, value = kwarg.split('=')
+                value = value.replace("_", " ").strip('"')
+                key = key.replace("_", " ").strip('"')
+                if type(value.strip("'")) == float:
+                    value = float(value.strip("'"))
+                    print(value)
+                if type(value.strip("'")) == int:
+                    value = int(value)
+                dict_kwargs[key] = value
+            print(dict_kwargs)
+        """print(class_name)
         if not class_name:
             print("** class name missing **")
             return
@@ -134,7 +146,7 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
             print(key.id)
         except NameError:
-            print("** class doesn't exist **")
+            print("** class doesn't exist **")"""
 
     def help_create(self):
         """ Help information for the create method """
