@@ -136,8 +136,7 @@ class HBNBCommand(cmd.Cmd):
                     else:
                         num_value = int(num_float[0])
                 else:
-                    escape_re = re.escape((?<=["']).*?(?=["']))
-                    value = re.findall(r'(?<=["']).*?(?=["'])', value))
+                    value = value.split('"')[1]
                 key = key.replace("_", " ").strip('"')
                 if len(num_float) != 0:
                     dict_kwargs[key] = num_value
