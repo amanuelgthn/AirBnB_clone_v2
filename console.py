@@ -143,7 +143,6 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     dict_kwargs[key] = value
             print(dict_kwargs)
-        """print(class_name)
         if not class_name:
             print("** class name missing **")
             return
@@ -151,12 +150,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         try:
-            key = eval(args)()
+            key = eval(dict_kwargs)()
             storage.new(key)
             storage.save()
             print(key.id)
         except NameError:
-            print("** class doesn't exist **")"""
+            print("** class doesn't exist **")
 
     def help_create(self):
         """ Help information for the create method """
