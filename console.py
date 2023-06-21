@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import re
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -123,15 +124,25 @@ class HBNBCommand(cmd.Cmd):
         if kwargs:
             dict_kwargs = {}
             for kwarg in kwargs:
+                num_value = 0
                 key, value = kwarg.split('=')
-                value = value.replace("_", " ").strip('"')
+                value = value.replace("_", " ")
+                num_float = re.findall(r'[-+]?\d*\.?\d+', value[:])
+                if len(num_float) != 0:
+                    if num_float[0].startswith('0'):
+                        num_value = num_float[0]
+                    elif "." in num_float[0]:
+                        num_value = float(num_float[0])
+                    else:
+                        num_value = int(num_float[0])
+                else:
+                    escape_re = re.escape((?<=["']).*?(?=["']))
+                    value = re.findall(r'(?<=["']).*?(?=["'])', value))
                 key = key.replace("_", " ").strip('"')
-                if type(value.strip("'")) == float:
-                    value = float(value.strip("'"))
-                    print(value)
-                if type(value.strip("'")) == int:
-                    value = int(value)
-                dict_kwargs[key] = value
+                if len(num_float) != 0:
+                    dict_kwargs[key] = num_value
+                else:
+                    dict_kwargs[key] = value
             print(dict_kwargs)
         """print(class_name)
         if not class_name:
