@@ -150,7 +150,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         try:
-            key = eval(dict_kwargs)()
+            key = eval(class_name)()
             storage.new(key)
             storage.save()
             print(key.id)
