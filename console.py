@@ -119,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
         and prints the id of the new instance"""
         arguments = args.split(" ")
         class_name = arguments[0]
-        kwargs = arguments[1:]add
+        kwargs = arguments[1:]
         if kwargs:
             dict_kwargs = {}
             for kwarg in kwargs:
@@ -149,12 +149,12 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             cls = eval(class_name)()
-            for key in dict_kwargs:
-                setattr(cls, key, dict_kwargs[key])
+            for key, value in dict_kwargs.items():
+                setattr(cls, key, value)
             storage.save()
             print(cls.id)
-        except NameError:
-            print("** class doesn't exist **")
+        except Exception as e:
+            print("""**e**""")
 
     def help_create(self):
         """ Help information for the create method """
