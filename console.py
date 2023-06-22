@@ -141,6 +141,8 @@ class HBNBCommand(cmd.Cmd):
                     dict_kwargs[key] = num_value
                 else:
                     dict_kwargs[key] = value
+        else:
+            dict_kwargs = {}
         if not class_name:
             print("** class name missing **")
             return
@@ -149,8 +151,11 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             cls = eval(class_name)()
-            for key, value in dict_kwargs.items():
-                setattr(cls, key, value)
+            if dict_kwargs:
+                for key, value in dict_kwargs.items():
+                    setattr(cls, key, value)
+            else:
+                storage.new(cls)
             storage.save()
             print(cls.id)
         except Exception as e:
