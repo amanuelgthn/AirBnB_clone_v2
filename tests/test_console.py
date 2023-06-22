@@ -13,7 +13,7 @@ from models.engine.file_storage import FileStorage
 
 class TestHBNBCommand(unittest.TestCase):
     """Testing the HBNBCommand class"""
-    
+
     @classmethod
     def setUpClass(cls):
         try:
@@ -21,6 +21,7 @@ class TestHBNBCommand(unittest.TestCase):
         except FileNotFoundError:
             pass
         cls.hbnb = HBNBCommand()
+
     @classmethod
     def tearDownClass(cls):
         try:
@@ -28,10 +29,11 @@ class TestHBNBCommand(unittest.TestCase):
         except FileNotFoundError:
             pass
         del cls.hbnb
+
     def setUp(self):
         """Set up the test"""
         FileStorage._FileStorage__objects = {}
-        
+
     def tearDown(self):
         """Tear down the test"""
         try:
@@ -39,7 +41,7 @@ class TestHBNBCommand(unittest.TestCase):
             os.remove("filetest.json")
         except FileNotFoundError:
             pass
-    
+
     def test_emptyline(self):
         """Testing the emptyline method"""
         with patch('sys.stdout', new=StringIO()) as fake_stdout:
