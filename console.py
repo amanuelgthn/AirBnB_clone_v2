@@ -162,30 +162,20 @@ class HBNBCommand(cmd.Cmd):
         print("[Usage]: create <className>\n")
 
     def do_show(self, args):
-        """ Method to show an individual object """
-        new = args.partition(" ")
-        c_name = new[0]
-        c_id = new[2]
-
-        # guard against trailing args
-        if c_id and ' ' in c_id:
-            c_id = c_id.partition(' ')[0]
-
-        if not c_name:
+        arguments = str(args[0]).split(" ")
+        if arguments[0] == "":
             print("** class name missing **")
             return
-
-        if c_name not in HBNBCommand.classes:
+        elif arguments[0] not in self.classes:
             print("** class doesn't exist **")
             return
-
-        if not c_id:
+        elif len(arguments) == 1:
             print("** instance id missing **")
             return
-
-        key = c_name + "." + c_id
+        key = arguments[0] + "." + arguments[1]
         try:
-            print(storage._FileStorage__objects[key])
+            obj = (models.storage.all())[key]
+            print(obj.__str__())
         except KeyError:
             print("** no instance found **")
 
