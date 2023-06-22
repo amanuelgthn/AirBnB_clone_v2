@@ -119,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
         and prints the id of the new instance"""
         arguments = args.split(" ")
         class_name = arguments[0]
-        kwargs = arguments[1:]
+        kwargs = arguments[1:]add
         if kwargs:
             dict_kwargs = {}
             for kwarg in kwargs:
@@ -149,10 +149,8 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             cls = eval(class_name)()
-            storage.new(cls)
-            for key, value in dict_kwargs.items():
-                setattr(cls, key, value)
-                cls.save()
+            for key in dict_kwargs:
+                setattr(cls, key, dict_kwargs[key])
             storage.save()
             print(cls.id)
         except NameError:
