@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import uuid
 import re
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -126,17 +127,21 @@ class HBNBCommand(cmd.Cmd):
                 num_value = 0
                 key, value = kwarg.split('=')
                 value = value.replace("_", " ")
-                num_float = re.findall(r'[-+]?\d*\.?\d+', value[:])
-                if len(num_float) != 0:
-                    if num_float[0].startswith('0'):
-                        num_value = num_float[0]
-                    elif "." in num_float[0]:
-                        num_value = float(num_float[0])
-                    else:
-                        num_value = int(num_float[0])
+                key = key.strip('"')
+                if valid_uuid(value) == True:
+                    dict_kwargs[key] = value
+                    continue
                 else:
-                    value = value.split('"')[1]
-                key = key.replace("_", " ").strip('"')
+                    num_float = re.findall(r'[-+]?\d*\.?\d+', value[:])
+                    if num_float is not None and len(num_float) != 0:
+                        if num_float[0].startswith('0'):
+                            num_value = num_float[0]
+                        elif "." in num_float[0]:
+                            num_value = float(num_float[0])
+                        else:
+                            num_value = int(num_float[0])
+                    else:
+                        value = value.split('"')[1]
                 if len(num_float) != 0:
                     dict_kwargs[key] = num_value
                 else:
@@ -355,6 +360,12 @@ class HBNBCommand(cmd.Cmd):
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
+def valid_uuid(val):
+    if not val.startswith("-") and "-" in val:
+        print(val)
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
