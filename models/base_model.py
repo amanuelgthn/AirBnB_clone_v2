@@ -23,23 +23,26 @@ else:
 class BaseModel:
     """A base class for all hbnb models"""
     if models.type_storage == "db":
-        id = Column(String(60), primary_key=True, nullable=False, unique=True)
-        created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-        updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+        id = Column(String(60), primary_key=True)
+        created_at = Column(DateTime, default=datetime.utcnow)
+        updated_at = Column(DateTime, default=datetime.utcnow)
 
     def __init__(self, *args, **kwargs):
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         if kwargs:
             for key, value in kwargs.items():
-                if key == "id":
-                    self.id = value
-                elif key == "created_at":
-                    self.created_at = datetime.strptime(value, time_format)
-                elif key == "updated_at":
-                    self.updated_at = datetime.strptime(value, time_format)
-                else:
-                    if key != "__class__":
-                        setattr(self, key, value)
+                if key != "__class__":
+                    setattr(self, key, value)
+            if kwargs.get("created_at", None) and type(self.created_at) is str:
+                self.created_at = datetime.strptime(kwargs["created_at"], time_format)
+            else:
+                self.created_at = datetime.utcnow()
+            if kwargs.get("updated_at", None) and type(self.updated_at) is str:
+                self.updated_at = datetime.strptime(kwargs["updated_at"], time_format)
+            else:
+                self.updated_at = datetime.utcnow()
+            if kwargs.get("id", None) is None:
+                self.id = str(uuid.uuid4())
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.utcnow()
@@ -73,4 +76,3 @@ class BaseModel:
         """Deletes the instance from the database"""
         from models import storage
         storage.delete(self)
-        storage.save()

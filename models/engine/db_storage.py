@@ -25,10 +25,18 @@ class DBStorage():
                     'Amenity': Amenity, 'Place': Place, 'Review': Review}
 
     def __init__(self):
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
-            getenv('HBNB_MYSQL_USER'), getenv('HBNB_MYSQL_PWD'),getenv('HBNB_MYSQL_DB'), pool_pre_ping=True))
-        self.__session = scoped_session(sessionmaker(bind=self.__engine))
-        if getenv('HBNB_ENV') == 'test':
+        """Instantiate a DBStorage object"""
+        HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
+        HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
+        HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
+        HBNB_MYSQL_DB = getenv('HBNB_MYSQL_DB')
+        HBNB_ENV = getenv('HBNB_ENV')
+        self.__engine = create_engine('mysql+pymysql://{}:{}@{}/{}'.
+                                      format(HBNB_MYSQL_USER,
+                                             HBNB_MYSQL_PWD,
+                                             HBNB_MYSQL_HOST,
+                                             HBNB_MYSQL_DB))
+        if HBNB_ENV == 'test':
             Base.metadata.drop_all(self.__engine)
     
     def all(self, cls=None):
@@ -49,25 +57,22 @@ class DBStorage():
         self.__session.add(obj)
     
     def save(self):
-        """s
-        ave all the changes made in the session
+        """
+        save all the changes made in the session
         """
         self.__session.commit()
         
     def delete(self, obj=None):
         if obj is not None:
              self.__session.delete(obj)
-             self.__session.commit()
+
     
     def reload(self):
-        """create all tables in the database(feature of SQLAlchemy)(WARNING:all classes 
-        which inherits from Base must be imported before calling Base.metadata.create_all
-        (self.__engine), create the current database session from the engine by a sessionmaker
-        - the option expire_on_commit must be set to False and scopped_session to make the session thread-safe)
-        """
+        """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
-        self.__session = scoped_session(sessionmaker(bind=self.__engine))
-        self.__session.expire_on_commit = False
+        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess_factory)
+        self.__session = Session
 
     def close(self):
         """

@@ -12,9 +12,9 @@ from sqlalchemy.orm import relationship
 class State(BaseModel, Base):
     """ State class """
     if models.type_storage == "db":
-        __tablename__ = 'state'
+        __tablename__ = 'states'
         name = Column(String(128), nullable=False)
-        cities = relationship("City", backref="state", foreign_keys='city.state_id')
+        cities = relationship("City", backref="state")
     else:
         name = ""
     
