@@ -14,6 +14,7 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -115,56 +116,26 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """Creates a new instance of BaseModel, Saves it (to the JSON)
-        and prints the id of the new instance"""
-        arguments = args.split(" ")
-        class_name = arguments[0]
-        kwargs = arguments[1:]
-        if kwargs:
-            dict_kwargs = {}
-            for kwarg in kwargs:
-                num_value = 0
-                key, value = kwarg.split('=')
-                value = value.replace("_", " ")
-                key = key.strip('"')
-                if valid_uuid(value) == True:
-                    dict_kwargs[key] = value
-                    continue
-                else:
-                    num_float = re.findall(r'[-+]?\d*\.?\d+', value[:])
-                    if num_float is not None and len(num_float) != 0:
-                        if num_float[0].startswith('0'):
-                            num_value = num_float[0]
-                        elif "." in num_float[0]:
-                            num_value = float(num_float[0])
-                        else:
-                            num_value = int(num_float[0])
-                    else:
-                        value = value.split('"')[1]
-                if len(num_float) != 0:
-                    dict_kwargs[key] = num_value
-                else:
-                    dict_kwargs[key] = value
-        else:
-            dict_kwargs = {}
-        if not class_name:
+    def do_create(self, *args):
+        """
+        Creates a new instance of BaseModel, saves it (to the JSON)
+        and prints the id
+        """
+        arguments = str(args[0]).split(" ")
+        if arguments[0] == "":
             print("** class name missing **")
             return
-        elif class_name not in HBNBCommand.classes:
+        elif arguments[0] not in self.classes:
             print("** class doesn't exist **")
             return
         try:
-            cls = eval(class_name)()
-            if dict_kwargs:
-                for key, value in dict_kwargs.items():
-                    setattr(cls, key, value)
-            else:
-                storage.new(cls)
+            key = eval(arguments[0])()
+            storage.new(key)
             storage.save()
-            print(cls.id)
-        except Exception as e:
-            print("""**e**""")
+            print(key.id)
+        except NameError:
+            print("** class doesn't exist **")
+
 
     def help_create(self):
         """ Help information for the create method """
@@ -246,6 +217,7 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
+            
             for k, v in storage._FileStorage__objects.items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
