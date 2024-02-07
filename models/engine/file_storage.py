@@ -58,11 +58,14 @@ class FileStorage:
     def reload(self):
         """Loads storage dictionary from file"""
         if os.path.exists(self.__file_path):
-            with open(self.__file_path, 'r', encoding="UTF-8") as file:
-                objects = json.load(file)
-            for key, value in objects.items():
-                obj = self.dict_ref[value['__class__']](**value)
-                self.__objects[key] = obj
+            try:
+                with open(self.__file_path, 'r', encoding="UTF-8") as file:
+                    objects = json.load(file)
+                for key, value in objects.items():
+                    obj = self.dict_ref[value['__class__']](**value)
+                    self.__objects[key] = obj
+            except Exception:
+                pass
 
     def close(self):
         """
