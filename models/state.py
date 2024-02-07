@@ -31,7 +31,7 @@ class State(BaseModel, Base):
             """
             cities = []
             dict_cities = models.storage.all(City)
-            for city in dict_cities.values:
+            for city in dict_cities.values():
                 if city.state_id == self.id:
                     cities.append(city)
             return cities

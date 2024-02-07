@@ -38,7 +38,7 @@ class DBStorage():
                                              HBNB_MYSQL_DB))
         if HBNB_ENV == 'test':
             Base.metadata.drop_all(self.__engine)
-    
+
     def all(self, cls=None):
         """converts query to a dict of objects"""
         objs = {}
@@ -55,18 +55,17 @@ class DBStorage():
         add obj to the current session
         """
         self.__session.add(obj)
-    
+
     def save(self):
         """
         save all the changes made in the session
         """
         self.__session.commit()
-        
+
     def delete(self, obj=None):
         if obj is not None:
-             self.__session.delete(obj)
+            self.__session.delete(obj)
 
-    
     def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
